@@ -1,36 +1,43 @@
 import React, { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import {RegisterUser} from "../actions/authActions"
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterComponent() {
+    const dispatch=useDispatch();
     const[fileError,setfileError]=useState(false);
     const imageRef=useRef("");
-    const {register,handleSubmit,watch,formState:{
-        errors
+    const {register,handleSubmit,reset,watch,formState:{
+        errors,
     }}=useForm();
+    const navigate=useNavigate();
 
     
-    const [preview,setPreview]=useState("")
+    const [preview,setPreview]=useState(null)
+    const [filename,setFilename]=useState(null);
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
        const formData= {profilePicture:preview,...data}
        if(formData.profilePicture===""){
-        console.log(1)
         return setfileError(true)
        }
-       console.log(formData)
-    
+       const response=await dispatch(RegisterUser(formData));
+       reset();
+       setFilename(null);
+       setPreview(null);
+       if(response.status==="Success"){
+           navigate("/messenger/login")
+       }
     }
 
     const handleFileChange=(event)=>{
-        const reader=new FileReader();
+        // const reader=new FileReader();
         const file=event.target.files[0];
-        const urlImage=URL.createObjectURL(file);
-        console.log(urlImage);
+        // console.log("original file",file)
+        setFilename(file.name)
+        setPreview(file);
         setfileError(false)
-        // const urlImage=console.log(reader.readAsDataURL(file));
-
-
-        setPreview(urlImage)
     }
 
     const onUpload=()=>{
@@ -59,7 +66,7 @@ function RegisterComponent() {
                                         })}
                                     />
                                      {
-                                    errors.userName && errors.userName.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.userName?.message}</p>
+                                    errors.userName && errors.userName.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.userName?.message} <sup>*</sup></p>
                                     }
                                 </div>
                                 <div>
@@ -70,7 +77,7 @@ function RegisterComponent() {
                                         })}
                                     />
                                      {
-                                    errors.email && errors.email.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.email?.message}</p>
+                                    errors.email && errors.email.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.email?.message} <sup>*</sup></p>
                                     }
                                 </div>
                                 <div>
@@ -81,7 +88,7 @@ function RegisterComponent() {
                                         })}
                                     />
                                     {
-                                    errors.password && errors.password.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.password?.message}</p>
+                                    errors.password && errors.password.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.password?.message} <sup>*</sup></p>
                                     }
                                 </div>
                                 <div>
@@ -95,13 +102,17 @@ function RegisterComponent() {
                                         })}
                                     />
                                     {
-                                    errors.confirmPassword && errors.confirmPassword.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.confirmPassword?.message}</p> ||
-                                    errors.confirmPassword && errors.confirmPassword.type==='validate' && <p className='mt-2 text-[14px] text-red-500'>{errors?.confirmPassword?.message}</p>
+                                    errors.confirmPassword && errors.confirmPassword.type==='required' && <p className='mt-2 text-[14px] text-red-500'>{errors?.confirmPassword?.message} <sup>*</sup></p> ||
+                                    errors.confirmPassword && errors.confirmPassword.type==='validate' && <p className='mt-2 text-[14px] text-red-500'>{errors?.confirmPassword?.message} <sup>*</sup></p>
                                     }
                                 </div>
                                 <div className='flex flex-col gap-3'>
                                     <div className='flex items-center gap-x-4'>
-                                    <img src={preview||`https://placehold.co/600x400`} className='w-[65px] aspect-square rounded-full object-cover'/>
+                                    {
+                                        preview ?
+                                        <img src={URL.createObjectURL(preview)} className='w-[65px] aspect-square rounded-full object-cover border-[1px] border-black'/>:
+                                        <img src={`https://placehold.co/600x400`} className='w-[65px] aspect-square rounded-full object-cover border-[1px] border-black'/>
+                                    }
                                     <input type='file' className="hidden" ref={imageRef}  onChange={handleFileChange} />
                                     <p className='rounded-3xl px-5 py-3 bg-blue-500 text-white font-bold' onClick={onUpload}  >Select Image</p>
                                     </div>
@@ -111,7 +122,7 @@ function RegisterComponent() {
                               
                                 <button className='w-full px-3 py-2 bg-blue-500 text-white uppercase' onSubmit={handleSubmit(onSubmit)}>Register</button>
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    Already have an account? <a href="./login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                                    Already have an account? <a href="./login" className="font-medium text-indigo-600 hover:text-indigo-500 ">Login here</a>
                                 </p>
                             </form>
                         </div>
