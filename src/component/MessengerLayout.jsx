@@ -1,18 +1,39 @@
-import React, { useState } from 'react'
+import React, { useRef, useState,useEffect } from 'react'
 import { AiOutlineMenu } from "react-icons/ai";
+import { CiCirclePlus } from "react-icons/ci";
 import { RiMenu3Fill } from "react-icons/ri";
 import { motion } from "framer-motion"
 import ActiveFriend from './ActiveFriend';
 import Friend from './Friend';
+import Message from './Message';
+import {getAllUsers} from "../operation/fetchAllUsers"
+import { useDispatch, useSelector } from 'react-redux';
+
 
 function MessengerLayout() {
-    const [sidebarVisibility, setSideBarVisibility] = useState(false)
+    const dispatch=useDispatch();
+    const globalState=useSelector((state)=>state)
 
-    const framerSideBarPanel = {
-        initial: { x: '-100%' },
-        animate: { x: 0 },
-        exit: { x: '-100%' },
-        transition: { duration: 0.3 }
+    const [sidebarVisibility, setSideBarVisibility] = useState(false)
+    const inputRef = useRef("")
+
+    useEffect(  async ()=>{
+        const result=await getAllUsers(dispatch);
+        console.log(result);
+    },[])
+
+
+
+    function handleInputSubmit(event) {
+        event.preventDefault();
+        const inputValue = inputRef.current.value
+        console.log("Input Data", inputValue)
+        inputRef.current.value = "";
+
+    }
+
+    function handleInputChange(event) {
+        inputRef.current.value = event.target.value;
     }
 
     return (
@@ -42,8 +63,8 @@ function MessengerLayout() {
 
                     <div id='listofusers' className=' '>
                         <ul>
-                            {Array.from({ length: 1 }).map((element, indx) => {
-                                return <Friend key={indx} />
+                            {globalState.doctors.doctorList.map((element, indx) => {
+                                return <Friend key={indx} element={element} />
                             })}
 
 
@@ -60,42 +81,30 @@ function MessengerLayout() {
 
             <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-auto'>
 
-                <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
-                    Jurong Doctor
-                </div>
+                {globalState.chatUser.currentChatUser ?
+                    <>
+                        <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
+                            {globalState.chatUser.currentChatUser.username}
+                        </div>
 
-                <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[92.7vh]  overflow-y-auto '>
-                    {Array.from({ length: 2 }).map((el, indx) => {
-                        return <>
-                            <div className='flex justify-end gap-x-3   '>
-                                <p className='bg-[#1976d2] px-5 py-4 rounded-xl flex items-center relative text-white max-w-[45%]'>Hello, how are you Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam velit sint beatae id officia odio iste ad. Similique inventore obcaecati dignissimos in perferendis, exercitationem et id alias, neque sapiente dicta iusto iste beatae repellat distinctio a officiis illum ipsam laborum?
-                                    <div className='w-[20px] aspect-square absolute right-[-3px] top-[15px]  bg-[#1976d2] rotate-45' />
-                                </p>
-                                <div className='w-[40px] aspect-square self-start  justify-center'>
-                                    <img className='w-full h-full object-cover rounded-full' src='https://images.unsplash.com/photo-1655918061635-c7537f8b5239?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHJvbmFsZG98ZW58MHx8MHx8fDA%3D' />
-                                </div>
-                                    
-                            </div>
+                        <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[92.7vh]  overflow-y-auto '>
+                            {Array.from({ length: 3 }).map((el, indx) => {
+                                return indx === 0 || indx % 2 === 0 ? <Message sender={true} /> : <Message />
+                            })
 
-                            <div className='flex justify-start gap-x-3   '>
-                                <div className='w-[40px] aspect-square self-start  justify-center'>
-                                    <img className='w-full h-full object-cover rounded-full' src='https://images.unsplash.com/photo-1655918061635-c7537f8b5239?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHJvbmFsZG98ZW58MHx8MHx8fDA%3D' />
-                                </div>
-                                <p className='bg-[#1976d2] px-5 py-4 rounded-xl flex items-center relative text-white max-w-[45%]'>Hello, how are you Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam velit sint beatae id officia odio iste ad. Similique inventore obcaecati dignissimos in perferendis, exercitationem et id alias, neque sapiente dicta iusto iste beatae repellat distinctio a officiis illum ipsam laborum?
-                                    <div className='w-[20px] aspect-square absolute left-[-3px] top-[15px]  bg-[#1976d2] rotate-45' />
-                                </p>
-                            </div>
-                        </>
-                    })
+                            }
+                        </div>
 
-                    }
-                </div>
-
-                <div id='chat-bar' className='flex gap-x-3 w-full bg-pink-20 py-4  absolute bottom-[1px] px-6 bg-[#FFFFFF] z-20 '>
-                    <input type='text' className='w-ful px-5 py-3 w-full rounded-[40px] outline-none bg-[#f7f4f2]' placeholder='Enter Text' />
-                    <button className='px-6  text-white bg-blue-500 rounded-xl'>Send</button>
-                </div>
-
+                        <div id='chat-bar' >
+                            <form onSubmit={handleInputSubmit} className='flex gap-x-3 w-full bg-pink-20 py-4  absolute bottom-[1px] px-6 bg-[#FFFFFF] z-20 '>
+                                <input type='text' ref={inputRef} className='w-ful px-5 py-3 w-full rounded-[40px] outline-none bg-[#f7f4f2]' placeholder='Enter Text' onChange={handleInputChange} />
+                                <button className='px-6  text-white bg-blue-500 rounded-xl' onClick={handleInputSubmit}>Send</button>
+                            </form>
+                        </div>
+                    </>
+                    :
+                    <h1 className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] font-normal uppercase text-[#9bb068] flex gap-x-5 items-center cursor-pointer'> <CiCirclePlus /> Select a User to chat</h1>
+                }
             </div>
 
         </div>

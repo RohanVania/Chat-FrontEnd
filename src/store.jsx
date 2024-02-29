@@ -1,11 +1,12 @@
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./slices/AuthSlice";
+import ListReducer from "./slices/List";
+import CurrentChatUser from "./slices/ChatUser"
 
-import {configureStore} from  "@reduxjs/toolkit"
-import counterReducer from "./slices/TestSlice"
-import authReducer from "./slices/AuthSlice"
-
-export const store=configureStore({
-    reducer:{
-        counter:counterReducer,
-        auth:authReducer,
-    }
-})
+export const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    doctors:ListReducer,
+    chatUser:CurrentChatUser
+  },
+});

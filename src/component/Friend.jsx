@@ -1,13 +1,21 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import {setCurrentChatUser} from "../slices/ChatUser"
 
-function Friend() {
+function Friend({element}) {
+    const dispatch=useDispatch();
+
+    function changeCurrentChatUser(){
+        dispatch(setCurrentChatUser(element))
+    }
+
     return (
-        <li className='px-5 py-4 flex items-center justify-between cursor-pointer '>
+        <li className='px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-[#b0c77a]' onClick={changeCurrentChatUser}>
             <div className='flex items-center gap-x-2'>
                 <div className='w-[50px] aspect-square '>
-                    <img className='w-full h-full  rounded-full' src="https://images.unsplash.com/photo-1494959764136-6be9eb3c261e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D" />
+                    <img className='w-full h-full  rounded-full' src={`${element?.profilePicture}`} />
                 </div>
-                <p>Rohan Vania </p>
+                <p>{element?.username}</p>
             </div>
             <div className='bg-red-300 px-3 py-1 rounded-[100%]'>1</div>
         </li>

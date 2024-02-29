@@ -12,11 +12,12 @@ import HomeLayout from './component/HomeLayout.jsx';
 import { Toaster } from 'react-hot-toast';
 import ProtectedChatLayout from './component/ProtectedChatLayout.jsx';
 import MessengerLayout from './component/MessengerLayout.jsx';
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element:<HomeLayout/> ,
+        element: <HomeLayout />,
         errorElement: <ErrorPage />
     },
     {
@@ -35,12 +36,12 @@ const router = createBrowserRouter([
             </>
     },
     {
-        path:'/messenger/chatapplication',
-        element:<ProtectedChatLayout/>,
-        children:[
+        path: '/messenger/chatapplication',
+        element: <ProtectedChatLayout />,
+        children: [
             {
-                path:"",
-                element:<MessengerLayout/>
+                path: "",
+                element: <MessengerLayout />
             },
             {
 
@@ -53,11 +54,12 @@ const router = createBrowserRouter([
 
 
 
-
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <Provider store={store}>
-        <RouterProvider router={router}>
-            <App />
-        </RouterProvider>
-    </Provider>
+    <QueryClientProvider client={new QueryClient()}>
+        <Provider store={store}>
+            <RouterProvider router={router}>
+                <App />
+            </RouterProvider>
+        </Provider>
+    </QueryClientProvider>
 )
