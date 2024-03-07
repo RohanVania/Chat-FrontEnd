@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const chatUser={
-    currentChatUser:null
+    currentChatUser: JSON.parse(localStorage.getItem('currentChatUser')) || null
 }
 
 const currenChattUser=createSlice({

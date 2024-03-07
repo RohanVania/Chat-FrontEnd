@@ -1,4 +1,4 @@
-import React, { useRef, useState,useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { AiOutlineMenu } from "react-icons/ai";
 import { CiCirclePlus } from "react-icons/ci";
 import { RiMenu3Fill } from "react-icons/ri";
@@ -6,30 +6,47 @@ import { motion } from "framer-motion"
 import ActiveFriend from './ActiveFriend';
 import Friend from './Friend';
 import Message from './Message';
-import {getAllUsers} from "../operation/fetchAllUsers"
+import { getAllUsers } from "../operation/fetchAllUsers"
 import { useDispatch, useSelector } from 'react-redux';
+import socket from '../socket';
+import { savemessage } from '../actions/messageActions';
 
 
 function MessengerLayout() {
-    const dispatch=useDispatch();
-    const globalState=useSelector((state)=>state)
+    const dispatch = useDispatch();
+    const globalState = useSelector((state) => state)
+    console.log(globalState.chatUser)
 
     const [sidebarVisibility, setSideBarVisibility] = useState(false)
     const inputRef = useRef("")
 
-    useEffect(  async ()=>{
-        const result=await getAllUsers(dispatch);
+    useEffect(async () => {
+        const result = await getAllUsers(dispatch);
         console.log(result);
-    },[])
+    }, [])
 
-
-
-    function handleInputSubmit(event) {
+    async function handleInputSubmit(event) {
         event.preventDefault();
         const inputValue = inputRef.current.value
-        console.log("Input Data", inputValue)
-        inputRef.current.value = "";
+        console.log("Sending the message function called")
+        // const dataToSend = { msg: inputValue, toUser: globalState.chatUser?.currentChatUser };
+        const dataToSend = {
+            message: inputValue,
+            senderName: globalState.auth?.authDetail?.username,
+            senderId: globalState.auth?.authDetail?.id,
+            receiverId:globalState.chatUser?.currentChatUser?.id,
+            receiverEmail:globalState.chatUser?.currentChatUser?.email,
+            receiverName:globalState.chatUser?.currentChatUser?.username,
+        }
 
+        const result = await savemessage(dataToSend)
+        
+        console.log(result);
+        if(result.status===200 && result.data.status==="Success"){
+            socket.emit('sendMessage', result.data.data);
+        }
+
+        inputRef.current.value = "";
     }
 
     function handleInputChange(event) {
@@ -49,7 +66,7 @@ function MessengerLayout() {
                         </button>
                     </div>
 
-                    <div id='search-bar' className=' px-5 py-3'>
+                    <div id='search-bar' className=' px-5 py-3 '>
                         <input type='text' className='w-full py-2 px-4  outline-none  rounded-3xl' placeholder='Search ' />
                     </div>
 
@@ -80,16 +97,18 @@ function MessengerLayout() {
             }
 
             <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-auto'>
-
-                {globalState.chatUser.currentChatUser ?
+                {globalState.chatUser?.currentChatUser ?
                     <>
                         <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
-                            {globalState.chatUser.currentChatUser.username}
+
+                            {
+                                globalState.chatUser.currentChatUser?.username
+                            }
                         </div>
 
                         <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[92.7vh]  overflow-y-auto '>
                             {Array.from({ length: 3 }).map((el, indx) => {
-                                return indx === 0 || indx % 2 === 0 ? <Message sender={true} /> : <Message />
+                                return indx === 0 || indx % 2 === 0 ? <Message key={indx} sender={true}  /> : <Message />
                             })
 
                             }

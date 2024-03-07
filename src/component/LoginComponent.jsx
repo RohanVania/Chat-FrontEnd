@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form'
 import {LoginUser} from  "../actions/authActions"
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
+import socket from '../socket';
 
 function LoginComponent() {
+  
   const dispatch=useDispatch();
   const navigate=useNavigate();
   const { register, handleSubmit,reset, formState: {
@@ -18,6 +20,7 @@ function LoginComponent() {
     reset();
     if(response?.data?.status==="Success"){
       navigate("/messenger/chatapplication")
+      socket.connect()
     }
     
   }

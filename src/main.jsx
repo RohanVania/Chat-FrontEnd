@@ -51,9 +51,6 @@ const router = createBrowserRouter([
 ])
 
 
-
-
-
 ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={new QueryClient()}>
         <Provider store={store}>

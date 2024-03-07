@@ -10,7 +10,7 @@ export const RegisterUser=(formData)=>{
                 const headers={
                     "Content-Type":"multipart/form-data"
                 }
-                const axiosResponse=await apiCaller('POST','/api/messenger/user-register',formData,headers);
+                const axiosResponse=await apiCaller('POST','/api/auth/user-register',formData,headers);
                 console.log(axiosResponse.data);
                 if(axiosResponse.data.status==='Failed'){
                     throw  Error(axiosResponse.data.msg)
@@ -34,14 +34,16 @@ export const RegisterUser=(formData)=>{
 export const LoginUser=(formData)=>{
     return async (dispatch)=>{
         try{
-            const axiosResponse=await apiCaller('POST','/api/messenger/user-login',formData);
+            const axiosResponse=await apiCaller('POST','/api/auth/user-login',formData);
             if(axiosResponse.data.status==="Success"){
                 toast.success("User logged in successfully ✅",{
                     id:'Login-success-1'
                 })
                 dispatch(setAuthDetail(axiosResponse.data.data));
-                dispatch(setAuthToken(axiosResponse.data.token))                
-                localStorage.setItem('authToken',axiosResponse.data.token)
+                dispatch(setAuthToken(axiosResponse.data.token));
+                let userDetail=JSON.stringify(axiosResponse.data.data);        
+                localStorage.setItem('userDetail',userDetail);        
+                localStorage.setItem('authToken',axiosResponse.data.token);
                 socket.connect();
             }else{
                 throw new Error(axiosResponse.data.msg)
