@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentChatUser } from "../slices/ChatUser"
+import { getMessageForEachUsers } from '../operation/fetchAllUsers';
 
 function Friend({ element }) {
     const dispatch = useDispatch();
@@ -8,9 +9,11 @@ function Friend({ element }) {
 
     const activeStyle = element.id === globalState?.currentChatUser?.id ? 'bg-red-300' : ''
 
-    function changeCurrentChatUser() {
+    async function changeCurrentChatUser() {
         localStorage.setItem('currentChatUser', JSON.stringify(element))
         dispatch(setCurrentChatUser(element))
+        const result=await getMessageForEachUsers(globalState.currentChatUser?.id);
+        console.log(result);
     }
 
 
