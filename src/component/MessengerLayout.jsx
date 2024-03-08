@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import ActiveFriend from './ActiveFriend';
 import Friend from './Friend';
 import Message from './Message';
-import { getAllUsers } from "../operation/fetchAllUsers"
+import { getAllUsers,getMessageForEachUsers } from "../operation/fetchAllUsers"
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../socket';
 import { savemessage } from '../actions/messageActions';
@@ -15,15 +15,23 @@ import { savemessage } from '../actions/messageActions';
 function MessengerLayout() {
     const dispatch = useDispatch();
     const globalState = useSelector((state) => state)
+    const {currentChatUser}=useSelector((state)=>state.chatUser);
     console.log(globalState.chatUser)
 
     const [sidebarVisibility, setSideBarVisibility] = useState(false)
     const inputRef = useRef("")
 
+     //^ For Fetching doctors in every re -renders
     useEffect(async () => {
         const result = await getAllUsers(dispatch);
         console.log(result);
     }, [])
+
+    // useEffect(async ()=>{
+    //     const result=await getMessageForEachUsers();
+    //     console.log(result);
+    // },[currentChatUser])
+
 
     async function handleInputSubmit(event) {
         event.preventDefault();

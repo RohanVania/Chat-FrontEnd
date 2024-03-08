@@ -11,3 +11,13 @@ export const getAllUsers=async (dispatch)=>{
         console.log("Fetching all users",err)
     }
 }
+
+export const getMessageForEachUsers=async (currentChatUserID)=>{
+    try{
+        const axiosResponse=await apiCaller('GET',`/api/messenger/getAllMessages/${currentChatUserID}`)
+        console.log(axiosResponse)
+        return axiosResponse;
+    }catch(err){
+        console.log(err);
+    }
+}
