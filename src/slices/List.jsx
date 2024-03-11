@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 
-const doctorListSlice={
-    doctorList:[] //* Try to get this using socket io later
+const ListSlice={
+    List:[] //* Try to get this using socket io later
 }
 
-const doctorLists=createSlice({
-    name:'DoctorList',
-    initialState:doctorListSlice,
+const UserLists=createSlice({
+    name:'List',
+    initialState:ListSlice,
     reducers:{
-        getAllDoctorList:(state,action)=>{
+        getAllList:(state,action)=>{
             state.doctorList=action.payload
         }
     }
@@ -17,6 +17,6 @@ const doctorLists=createSlice({
 })
 
 
-export const {getAllDoctorList}=doctorLists.actions
-export default doctorLists.reducer
+export const {getAllList}=UserLists.actions
+export default UserLists.reducer
 

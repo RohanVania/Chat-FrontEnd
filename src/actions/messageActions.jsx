@@ -1,11 +1,11 @@
 import apiCaller from "../apiConnector"
+import { setMessageSendSuccess } from "../slices/ChatUser"
 
 
-export const savemessage = async (data) => {
+export const savemessage = async (data,dispatch) => {
         try {
-            console.log("hello",data)
             const axiosResult = await apiCaller('POST', '/api/messenger/savemessage', data)
-            // console.log(axiosResult);
+            dispatch(setMessageSendSuccess(axiosResult.data.data))
             return axiosResult;
 
         } catch (err) {

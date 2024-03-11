@@ -1,23 +1,34 @@
 import apiCaller from "../apiConnector"
-import {getAllDoctorList} from "../slices/List"
+import { setCurrentChatUser, setMessages } from "../slices/ChatUser"
+import { getAllList } from "../slices/List"
 
-export const getAllUsers=async (dispatch)=>{
-    try{
-        const axiosResponse=await apiCaller('GET','/api/users/doctors')
-        dispatch(getAllDoctorList(axiosResponse.data.data))
-        return axiosResponse
+export const getAllUsers = async (role,dispatch) => {
+    try {
+        if(role==='patient'){
+            const axiosResponse = await apiCaller('GET', '/api/users/doctors')
+            dispatch(getAllList(axiosResponse.data.data))
+            return axiosResponse
+        }
+        else{
+            const axiosResponse = await apiCaller('GET', '/api/users/patients')
+            dispatch(getAllList(axiosResponse.data.data))
+            return axiosResponse
+        
+        }
+    
     }
-    catch(err){
-        console.log("Fetching all users",err)
+    catch (err) {
+        console.log("Fetching all users", err)
     }
 }
 
-export const getMessageForEachUsers=async (currentChatUserID)=>{
-    try{
-        const axiosResponse=await apiCaller('GET',`/api/messenger/getAllMessages/${currentChatUserID}`)
-        console.log(axiosResponse)
+export const getMessageForEachUsers = async (element, dispatch) => {
+    try {
+        const axiosResponse = await apiCaller('GET', `/api/messenger/getAllMessages/${element.id}`)
+        dispatch(setCurrentChatUser(element))
+        dispatch(setMessages(axiosResponse.data.data))
         return axiosResponse;
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }

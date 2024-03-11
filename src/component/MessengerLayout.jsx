@@ -6,51 +6,43 @@ import { motion } from "framer-motion"
 import ActiveFriend from './ActiveFriend';
 import Friend from './Friend';
 import Message from './Message';
-import { getAllUsers,getMessageForEachUsers } from "../operation/fetchAllUsers"
+import { getAllUsers } from "../operation/fetchAllUsers"
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../socket';
 import { savemessage } from '../actions/messageActions';
+import { useQuery } from 'react-query';
 
 
 function MessengerLayout() {
+    console.log("Rendering")
     const dispatch = useDispatch();
-    const globalState = useSelector((state) => state)
-    const {currentChatUser}=useSelector((state)=>state.chatUser);
-    console.log(globalState.chatUser)
+    const globalStateDoctorsState = useSelector((state) => state.doctors);
+    const globalStateAuthState = useSelector((state) => state.auth);
+    const globalStateChatUserState = useSelector((state) => state.chatUser);
+
+    // let Messagearray = globalStateChatUserState.messages.length !== 0 ? globalStateChatUserState.messages : [];
 
     const [sidebarVisibility, setSideBarVisibility] = useState(false)
     const inputRef = useRef("")
 
-     //^ For Fetching doctors in every re -renders
-    useEffect(async () => {
-        const result = await getAllUsers(dispatch);
-        console.log(result);
-    }, [])
-
-    // useEffect(async ()=>{
-    //     const result=await getMessageForEachUsers();
-    //     console.log(result);
-    // },[currentChatUser])
-
+    const{data}=useQuery('getAllUsers',()=>{getAllUsers(globalStateAuthState.authDetail.role,dispatch)},{staleTime:'Infinity'})
 
     async function handleInputSubmit(event) {
         event.preventDefault();
         const inputValue = inputRef.current.value
-        console.log("Sending the message function called")
-        // const dataToSend = { msg: inputValue, toUser: globalState.chatUser?.currentChatUser };
         const dataToSend = {
             message: inputValue,
-            senderName: globalState.auth?.authDetail?.username,
-            senderId: globalState.auth?.authDetail?.id,
-            receiverId:globalState.chatUser?.currentChatUser?.id,
-            receiverEmail:globalState.chatUser?.currentChatUser?.email,
-            receiverName:globalState.chatUser?.currentChatUser?.username,
+            senderName: globalStateAuthState?.authDetail?.username,
+            senderId: globalStateAuthState?.authDetail?.id,
+            receiverId: globalStateChatUserState?.currentChatUser?.id,
+            receiverEmail: globalStateChatUserState?.currentChatUser?.email,
+            receiverName: globalStateChatUserState?.currentChatUser?.username,
         }
 
-        const result = await savemessage(dataToSend)
-        
+        const result = await savemessage(dataToSend,dispatch)
+
         console.log(result);
-        if(result.status===200 && result.data.status==="Success"){
+        if (result.status === 200 && result.data.status === "Success") {
             socket.emit('sendMessage', result.data.data);
         }
 
@@ -78,18 +70,19 @@ function MessengerLayout() {
                         <input type='text' className='w-full py-2 px-4  outline-none  rounded-3xl' placeholder='Search ' />
                     </div>
 
-                    <div id='active-users' className='bg-blue-800 py-3 px- w-full overflow-x-auto  whitespace-nowrap'>
+                    {/* <div id='active-users' className='bg-blue-800 py-3 px- w-full overflow-x-auto  whitespace-nowrap'>
                         {
                             Array.from({ length: 5 }).map((element, index) => {
                                 return <ActiveFriend key={index} />
                             })
                         }
-                    </div>
+                    </div> */}
 
                     <div id='listofusers' className=' '>
                         <ul>
-                            {globalState.doctors.doctorList.map((element, indx) => {
-                                return <Friend key={indx} element={element} />
+                            {globalStateDoctorsState.doctorList?.map((element, indx) => {
+                                let activeElement=element.id === globalStateChatUserState?.currentChatUser?.id ? true : false
+                                return <Friend key={indx} element={element} activeElement={activeElement}  />
                             })}
 
 
@@ -105,20 +98,23 @@ function MessengerLayout() {
             }
 
             <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-auto'>
-                {globalState.chatUser?.currentChatUser ?
+                {globalStateChatUserState?.currentChatUser ?
                     <>
                         <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
-
                             {
-                                globalState.chatUser.currentChatUser?.username
+                                globalStateChatUserState.currentChatUser?.username
                             }
                         </div>
 
                         <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[92.7vh]  overflow-y-auto '>
-                            {Array.from({ length: 3 }).map((el, indx) => {
-                                return indx === 0 || indx % 2 === 0 ? <Message key={indx} sender={true}  /> : <Message />
-                            })
-
+                            {
+                                globalStateChatUserState.messages.length !== 0 && globalStateChatUserState.messages?.map((el, indx) => {
+                                    return el.senderId === globalStateAuthState.authDetail.id ? <Message key={indx} sender={true} element={el} /> : <Message key={indx} element={el} />
+                                }
+                                )
+                            }
+                            {
+                                 globalStateChatUserState.messages.length === 0 && <h1>There is no chat conversation between them</h1>
                             }
                         </div>
 
@@ -134,8 +130,42 @@ function MessengerLayout() {
                 }
             </div>
 
+
         </div>
     )
 }
 
 export default MessengerLayout
+
+{/* <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-auto'>
+{globalStateChatUserState?.currentChatUser ?
+    <>
+        <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
+            {
+                globalStateChatUserState.currentChatUser?.username
+            }
+        </div>
+
+        <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[92.7vh]  overflow-y-auto '>
+            {
+                Messagearray.length !== 0 && Messagearray?.map((el, indx) => {
+                    return el.senderId === globalStateAuthState.authDetail.id ? <Message key={indx} sender={true} element={el} /> : <Message key={indx} element={el} />
+                }
+                )
+            }
+            {
+                Messagearray.length === 0 && <p>There is no chat conversation between them</p>
+            }
+        </div>
+
+        <div id='chat-bar' >
+            <form onSubmit={handleInputSubmit} className='flex gap-x-3 w-full bg-pink-20 py-4  absolute bottom-[1px] px-6 bg-[#FFFFFF] z-20 '>
+                <input type='text' ref={inputRef} className='w-ful px-5 py-3 w-full rounded-[40px] outline-none bg-[#f7f4f2]' placeholder='Enter Text' onChange={handleInputChange} />
+                <button className='px-6  text-white bg-blue-500 rounded-xl' onClick={handleInputSubmit}>Send</button>
+            </form>
+        </div>
+    </>
+    :
+    <h1 className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] font-normal uppercase text-[#9bb068] flex gap-x-5 items-center cursor-pointer'> <CiCirclePlus /> Select a User to chat</h1>
+}
+</div> */}
