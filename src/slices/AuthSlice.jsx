@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState={
     loading:false,
     authToken:localStorage.getItem('authToken') || null,
-    authDetail:localStorage.getItem('userDetail') || null,
+    authDetail:JSON.parse(localStorage.getItem('userDetail')) || null,
 }
 
 const authSlice=createSlice({

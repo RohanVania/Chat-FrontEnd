@@ -21,6 +21,7 @@ function LoginComponent() {
     if(response?.data?.status==="Success"){
       navigate("/messenger/chatapplication")
       socket.connect()
+      socket.emit('joinroom',response.data.email);
     }
     
   }
