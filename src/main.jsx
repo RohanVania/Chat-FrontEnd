@@ -21,14 +21,14 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />
     },
     {
-        path: '/messenger/login',
+        path: './messenger/login',
         element: <>
             <Toaster />
             <LoginPage />
         </>
     },
     {
-        path: '/messenger/register',
+        path: './messenger/register',
         element:
             <>
                 <Toaster />
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
             </>
     },
     {
-        path: '/messenger/chatapplication',
+        path: './messenger/chatapplication',
         element: <ProtectedChatLayout />,
         children: [
             {
