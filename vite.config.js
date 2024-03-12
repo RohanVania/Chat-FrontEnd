@@ -10,4 +10,9 @@ export default defineConfig({
       "/api":"http://localhost:3112"
     }
    },
+   build:{
+    commonjsOptions:{
+      transformMixedEsModules:true
+    }
+   }
 })
