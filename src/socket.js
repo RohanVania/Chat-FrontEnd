@@ -1,6 +1,6 @@
 import {io} from  "socket.io-client"
 
-const url="http://localhost:3112"
+const url="https://socketserver-ylam.onrender.com"
 const socket=io(url,{
     autoConnect:false,
 })
