@@ -7,8 +7,11 @@ export default defineConfig({
    server: {
     host: true,
     proxy:{
-      "/api":"https://chat-microservice-9gcv.onrender.com"
+      "/api":"https://chat-microservice-9gcv.onrender.com",
+      changeOrigin: true,
+      rewrite: path => path.replace(/^\/api/, '')
     }
+   
    },
    build:{
     commonjsOptions:{
