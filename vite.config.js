@@ -7,7 +7,7 @@ export default defineConfig({
    server: {
     host: true,
     proxy:{
-      "/api":"https://chat-microservice-f0zr.onrender.com"
+      "/api":"https://chat-microservice-9gcv.onrender.com"
     }
    },
    build:{
