@@ -1,6 +1,6 @@
 import {io} from  "socket.io-client"
 
-const url="https://socketserver-ylam.onrender.com"
+const url="https://chat-microservice-9gcv.onrender.com"
 const socket=io(url,{
     autoConnect:false,
 })
