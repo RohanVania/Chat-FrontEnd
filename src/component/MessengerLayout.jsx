@@ -33,6 +33,7 @@ function MessengerLayout() {
     async function handleInputSubmit(event) {
         event.preventDefault();
         const inputValue = inputRef.current.value
+        
         const dataToSend = {
             message: inputValue,
             senderName: globalStateAuthState?.authDetail?.username,
@@ -55,9 +56,15 @@ function MessengerLayout() {
         inputRef.current.value = event.target.value;
     }
 
-    socket.on('getMessage', (data) => {
-        console.log("Message from server", data)
-        dispatch(setMessageSendSuccess(data))
+    useEffect(()=>{
+        socket.on('getMessage', (data) => {
+            console.log("Message from server", data)
+            dispatch(setMessageSendSuccess(data))
+    
+        })
+        return ()=>{
+            socket.off('getMessage')
+        }
     })
 
 
