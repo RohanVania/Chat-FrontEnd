@@ -21,14 +21,15 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />
     },
     {
-        path: './messenger/login',
+        path: 'https://master--visionary-faloodeh-fb0093.netlify.app/messenger/login',
+
         element: <>
             <Toaster />
             <LoginPage />
         </>
     },
     {
-        path: './messenger/register',
+        path: 'https://master--visionary-faloodeh-fb0093.netlify.app/messenger/register',
         element:
             <>
                 <Toaster />
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
             </>
     },
     {
-        path: './messenger/chatapplication',
+        path: 'https://master--visionary-faloodeh-fb0093.netlify.app/messenger/chatapplication',
         element: <ProtectedChatLayout />,
         children: [
             {
