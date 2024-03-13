@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const axiosInstance=axios.create({
-    baseURL:'https://chat-microservice-9gcv.onrender.com',
+    baseURL:'/',
+    withCredentials:true
 })
 
 const apiCaller=(method,url,data,headers,param)=>{
@@ -10,7 +11,12 @@ const apiCaller=(method,url,data,headers,param)=>{
         url:`${url}`,
         data:data?data:null,
         headers:headers?headers:null,
-        params:param?param:null
+        // headers:{
+        //     'Access-Control-Allow-Origin':'https://tcm-chat.netlify.app',
+        //     'Content-type':'application/json'
+        // },
+        params:param?param:null,
+        withCredentials:true
     })
 }
 
