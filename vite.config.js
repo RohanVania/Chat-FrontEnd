@@ -6,14 +6,16 @@ export default defineConfig({
   plugins: [react()],
    server: {
     host: true,
-    // proxy:{
-    //   "/api":"https://chat-microservice-9gcv.onrender.com",
-    //   changeOrigin: true,
-    //   rewrite: path => path.replace(/^\/api/, '')
-    // }
     proxy:{
-      "/api":'https://chat-microservice-9gcv.onrender.com'
+      "/api":{
+        target:"https://chat-microservice-9gcv.onrender.com",
+      changeOrigin: true,
+      rewrite: path => path.replace(/^\/api/, '')
+      }
     }
+    // proxy:{
+    //   "/api":'https://chat-microservice-9gcv.onrender.com'
+    // }
    
    },
    build:{
