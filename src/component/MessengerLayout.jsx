@@ -20,6 +20,9 @@ function MessengerLayout() {
     const globalStateDoctorsState = useSelector((state) => state.doctors);
     const globalStateAuthState = useSelector((state) => state.auth);
     const globalStateChatUserState = useSelector((state) => state.chatUser);
+    const messageRef=useRef(null);
+
+
 
     // let Messagearray = globalStateChatUserState.messages.length !== 0 ? globalStateChatUserState.messages : [];
 
@@ -67,6 +70,15 @@ function MessengerLayout() {
         }
     })
 
+    // useEffect(()=>{
+    //     if(messageRef){
+    //         messageRef.current?.addEventListener('DOMNodeInserted',event=>{
+    //             const {currentTarget:target}=event;
+    //             target.scroll({top:target.scrollHeight})
+    //         })
+    //     }
+    // })
+
 
 
     return (
@@ -113,7 +125,7 @@ function MessengerLayout() {
                 </div>
             }
 
-            <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-auto'>
+            <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-aut ' >
                 {globalStateChatUserState?.currentChatUser ?
                     <>
                         <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
@@ -122,7 +134,7 @@ function MessengerLayout() {
                             }
                         </div>
 
-                        <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[92.7vh]  overflow-y-auto '>
+                        <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[91.7vh]  overflow-y-auto ' ref={messageRef}>
                             {
                                 globalStateChatUserState?.messages?.length !== 0 && globalStateChatUserState?.messages?.map((el, indx) => {
                                     return el.senderId === globalStateAuthState.authDetail.id ? <Message key={indx} sender={true} element={el} /> : <Message key={indx} element={el} />
@@ -135,7 +147,7 @@ function MessengerLayout() {
                         </div>
 
                         <div id='chat-bar' >
-                            <form onSubmit={handleInputSubmit} className='flex gap-x-3 w-full bg-pink-20 py-4  absolute bottom-[1px] px-6 bg-[#FFFFFF] z-20 '>
+                            <form onSubmit={handleInputSubmit} className='flex gap-x-3 w-full bg-pink-20 py-4  absolute bottom-[2px] px-6 bg-[#FFFFFF] z-20 '>
                                 <input type='text' ref={inputRef} className='w-ful px-5 py-3 w-full rounded-[40px] outline-none bg-[#f7f4f2]' placeholder='Enter Text' onChange={handleInputChange} />
                                 <button className='px-6  text-white bg-blue-500 rounded-xl' onClick={handleInputSubmit}>Send</button>
                             </form>

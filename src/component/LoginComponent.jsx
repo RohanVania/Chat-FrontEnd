@@ -21,7 +21,6 @@ function LoginComponent() {
     if(response?.data?.status==="Success"){
       navigate("/messenger/chatapplication")
       socket.connect()
-      console.log(response.data.email);
       socket.emit('addUser',response.data.data.email);
     }
     
