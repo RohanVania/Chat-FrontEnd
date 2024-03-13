@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance=axios.create({
-    baseURL:'/',
+    baseURL:'https://chat-microservice-9gcv.onrender.com',
 })
 
 const apiCaller=(method,url,data,headers,param)=>{
