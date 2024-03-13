@@ -9,8 +9,8 @@ export default defineConfig({
     proxy:{
       "/api":{
         target:"https://chat-microservice-9gcv.onrender.com",
-      changeOrigin: true,
-      rewrite: path => path.replace(/^\/api/, '')
+      // changeOrigin: true,
+      // rewrite: path => path.replace(/^\/api/, '')
       }
     }
     // proxy:{
