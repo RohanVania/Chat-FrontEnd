@@ -12,16 +12,17 @@ import socket from '../socket';
 import { savemessage } from '../actions/messageActions';
 import { useQuery } from 'react-query';
 import { setMessageSendSuccess } from '../slices/ChatUser';
+import apiCaller from '../apiConnector';
 
 
 function MessengerLayout() {
     console.log("Rendering")
+
     const dispatch = useDispatch();
     const globalStateDoctorsState = useSelector((state) => state.doctors);
     const globalStateAuthState = useSelector((state) => state.auth);
     const globalStateChatUserState = useSelector((state) => state.chatUser);
-    const messageRef=useRef(null);
-
+    const messageRef = useRef(null);
 
 
     // let Messagearray = globalStateChatUserState.messages.length !== 0 ? globalStateChatUserState.messages : [];
@@ -36,7 +37,7 @@ function MessengerLayout() {
     async function handleInputSubmit(event) {
         event.preventDefault();
         const inputValue = inputRef.current.value
-        
+
         const dataToSend = {
             message: inputValue,
             senderName: globalStateAuthState?.authDetail?.username,
@@ -59,13 +60,13 @@ function MessengerLayout() {
         inputRef.current.value = event.target.value;
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         socket.on('getMessage', (data) => {
             console.log("Message from server", data)
             dispatch(setMessageSendSuccess(data))
-    
+
         })
-        return ()=>{
+        return () => {
             socket.off('getMessage')
         }
     })
@@ -79,7 +80,12 @@ function MessengerLayout() {
     //     }
     // })
 
+    const handleLogout=async ()=>{
+        const axiosResponse=await apiCaller('GET','/api/auth/user-logout');
+        dispatch({type:'logout'})
 
+        localStorage.clear();
+    }
 
     return (
         <div id='chat-page' className='flex min-h-[100vh]'>
@@ -128,10 +134,13 @@ function MessengerLayout() {
             <div id='chat-box' className='bg-[#FFFFFF] flex-1  relative max-h-[100vh] overflow-y-aut ' >
                 {globalStateChatUserState?.currentChatUser ?
                     <>
-                        <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] '>
-                            {
-                                globalStateChatUserState.currentChatUser?.username
-                            }
+                        <div id='chat-header' className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] flex items-center '>
+                            <p className='justify-start  w-full'>
+                                {
+                                    globalStateChatUserState.currentChatUser?.username
+                                }
+                            </p>
+                            <button className='text-[#9bb068] bg-transparent hover:bg-[#9bb068] text-blue-dark font-semibold text-[19px] hover:text-white py-2 px-2 border border-blue hover:border-transparent rounded' onClick={handleLogout}>Logout</button>
                         </div>
 
                         <div id='chat-body' className='pt-[50px] pb-[100px] flex flex-col gap-y-4  px-5 max-h-[91.7vh]  overflow-y-auto ' ref={messageRef}>
@@ -154,7 +163,13 @@ function MessengerLayout() {
                         </div>
                     </>
                     :
-                    <h1 className='bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] font-normal uppercase text-[#9bb068] flex gap-x-5 items-center cursor-pointer'> <CiCirclePlus /> Select a User to chat</h1>
+                    <h1 className='flex justify-between bg-pink-40 border-b-red-100 border-b-[1px] h-[72px] px-4 pt-2 text-[29px] font-normal uppercase text-[#9bb068] flex gap-x-5 items-center cursor-pointer '>
+                        <div className='flex items-center gap-x-4'>
+                            <CiCirclePlus />
+                            Select a User to chat
+                        </div>
+                        <button className='bg-transparent hover:bg-[#9bb068] text-blue-dark font-semibold text-[19px] hover:text-white py-2 px-2 border border-blue hover:border-transparent rounded' onClick={handleLogout}>Logout</button>
+                    </h1>
                 }
             </div>
 

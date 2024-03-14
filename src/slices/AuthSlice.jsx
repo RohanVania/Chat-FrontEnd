@@ -19,7 +19,9 @@ const authSlice=createSlice({
         },
         setAuthToken:(state,action)=>{
             state.authToken=action.payload
-        }
+        },
+       
+      
         
         
     }

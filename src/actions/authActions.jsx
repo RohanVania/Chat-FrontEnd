@@ -41,6 +41,7 @@ export const LoginUser=(formData)=>{
                 })
                 dispatch(setAuthDetail(axiosResponse.data.data));
                 dispatch(setAuthToken(axiosResponse.data.token));
+                
                 let userDetail=JSON.stringify(axiosResponse.data.data);        
                 localStorage.setItem('userDetail',userDetail);        
                 localStorage.setItem('authToken',axiosResponse.data.token);
