@@ -1,6 +1,8 @@
 import {io} from  "socket.io-client"
 
-const url="https://chat-microservice-9gcv.onrender.com"
+// const url="https://chat-microservice-9gcv.onrender.com"
+const url="http://localhost:3112"
+
 const socket=io(url,{
     autoConnect:false,
 })
@@ -15,10 +17,6 @@ socket.onAny((event,...args)=>{
 socket.on("hello",(args)=>{
     console.log("This is the message from socket server",args)
 })
-
-
-
-
 
 
 //* Logging Socket

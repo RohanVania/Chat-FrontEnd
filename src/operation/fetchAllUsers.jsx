@@ -32,3 +32,14 @@ export const getMessageForEachUsers = async (element, dispatch) => {
         console.log(err);
     }
 }
+
+ export const handleLogout =async()=>{
+    try{
+        const axiosResponse=await apiCaller('GET','/api/auth/user-logout');
+        console.log(axiosResponse);
+        localStorage.clear();
+
+    }catch(err){
+        console.log(err);
+    }
+ }
