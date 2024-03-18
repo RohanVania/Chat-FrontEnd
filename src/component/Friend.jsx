@@ -30,30 +30,30 @@ function Friend({ element, activeElement }) {
             <div className='bg-red-300 px-3 py-1 rounded-[100%]'>1</div>
         </li>
             :
-            <div class=" shadow rounded-md p-4 max-w-sm w-full mx-auto">
-                <div class="animate-pulse flex space-x-4">
-                    <div class="rounded-full bg-slate-700 h-10 w-10"></div>
-                    <div class="flex-1 space-y-6 py-1">
-                        <div class="h-2 bg-slate-700 rounded"></div>
-                        <div class="space-y-3">
-                            <div class="grid grid-cols-3 gap-4">
-                                <div class="h-2 bg-slate-700 rounded col-span-2"></div>
-                                <div class="h-2 bg-slate-700 rounded col-span-1"></div>
-                            </div>
-                            <div class="h-2 bg-slate-700 rounded"></div>
-                        </div>
-                    </div>
+            // <div class=" shadow rounded-md p-4 max-w-sm w-full mx-auto">
+            //     <div class="animate-pulse flex space-x-4">
+            //         <div class="rounded-full bg-slate-700 h-10 w-10"></div>
+            //         <div class="flex-1 space-y-6 py-1">
+            //             <div class="h-2 bg-slate-700 rounded"></div>
+            //             <div class="space-y-3">
+            //                 <div class="grid grid-cols-3 gap-4">
+            //                     <div class="h-2 bg-slate-700 rounded col-span-2"></div>
+            //                     <div class="h-2 bg-slate-700 rounded col-span-1"></div>
+            //                 </div>
+            //                 <div class="h-2 bg-slate-700 rounded"></div>
+            //             </div>
+            //         </div>
+            //     </div>
+            // </div>
+        <li className={`px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-[#b0c77a] `} onClick={changeCurrentChatUser}>
+            <div className='flex items-center gap-x-2'>
+                <div className='w-[50px] aspect-square '>
+                    <img className='w-full h-full  rounded-full' src={`${element?.profilePicture}`} />
                 </div>
+                <p>{element?.username}</p>
             </div>
-        // <li className={`px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-[#b0c77a] `} onClick={changeCurrentChatUser}>
-        //     <div className='flex items-center gap-x-2'>
-        //         <div className='w-[50px] aspect-square '>
-        //             <img className='w-full h-full  rounded-full' src={`${element?.profilePicture}`} />
-        //         </div>
-        //         <p>{element?.username}</p>
-        //     </div>
-        //     <div className='bg-red-300 px-3 py-1 rounded-[100%]'>1</div>
-        // </li>
+            <div className='bg-red-300 px-3 py-1 rounded-[100%]'>1</div>
+        </li>
     )
 }
 
